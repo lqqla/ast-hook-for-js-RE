@@ -128,6 +128,7 @@ function injectHook(jsCode) {
         }
 
     })
+	// 对处理后的JS代码进行压缩输出,避免ob等混淆代码检测格式化
     return generator.default(ast, {
 		minified: true,
 		compact: true,
