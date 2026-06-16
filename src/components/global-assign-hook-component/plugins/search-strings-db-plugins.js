@@ -208,6 +208,13 @@
     }
 
     function parseCodeLocation(codeLocation) {
+        // eval/Worker 等环境下 getCodeLocation() 返回 null，parseCodeLocation 对 null 调用 .match() 导致 TypeError
+        // codeLocation 可能是正常字符串，也可能是 null
+        if (!codeLocation) {
+            // codeLocation 是 null → 进这里，返回空值，不往下执行
+            return { codeName: null, codeAddress: null };
+        }
+        // codeLocation 有值 → 正常解析
         const codeInfo = {};
         let matcher = codeLocation.match(/\((.+?)\)/);
         if (matcher != null && matcher.length > 1) {
