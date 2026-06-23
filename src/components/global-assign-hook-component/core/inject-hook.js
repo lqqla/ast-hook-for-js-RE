@@ -113,6 +113,12 @@ function injectHook(jsCode) {
                 for (let i = params.length - 1; i >= 0; i--) {
                     try {
                         const paramName = params[i];
+                        // 这里只能直接把“普通标识符参数”塞进函数调用。
+                        // 像 ObjectPattern / ArrayPattern / AssignmentPattern 这类解构或默认值参数，
+                        // 不能直接作为 CallExpression 的参数，否则 Babel 会报类型错误。
+                        if (!types.isIdentifier(paramName)) {
+                            continue;
+                        }
                         const hookFunctionArguments = [
                             types.stringLiteral(generator.default(paramName).code),
                             paramName,
